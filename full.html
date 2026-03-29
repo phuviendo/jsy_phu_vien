@@ -43,8 +43,27 @@
                 <option value="vip">Cá VIP (> 500.000đ)</option>
             </select>
         </div>
-
     </div>
+
+    <div id="cart-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; justify-content:center; align-items:center;">
+    <div style="background:white; width:90%; max-width:600px; border-radius:15px; padding:20px; position:relative; max-height: 80vh; overflow-y: auto;">
+        <span onclick="toggleCart()" style="position:absolute; top:10px; right:20px; font-size:30px; cursor:pointer;">&times;</span>
+        <h2 style="text-align:center; color: #0077b6;">🛒 Giỏ Hàng Của Bạn</h2>
+        
+        <div id="cart-items-list">
+            </div>
+
+        <hr style="margin: 20px 0;">
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem;">
+            <span>Tổng cộng:</span>
+            <span id="cart-total-price" style="color:#e67e22;">0đ</span>
+        </div>
+        
+        <button onclick="checkout()" style="width:100%; background:#27ae60; color:white; border:none; padding:15px; border-radius:8px; margin-top:20px; font-weight:bold; cursor:pointer;">
+            XÁC NHẬN ĐẶT HÀNG
+        </button>
+    </div>
+</div>
 
     <div class="container">
     <div id="product-grid" class="grid-container">
@@ -104,174 +123,69 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <script>const API_URL = 'https://697580a2265838bbea977685.mockapi.io/books';
-
+<script>const API_URL = 'https://697580a2265838bbea977685.mockapi.io/books';
 const productGrid = document.getElementById('product-grid');
 const loadingElement = document.getElementById('loading');
-let allFishes = []; // Biến lưu trữ dữ liệu gốc để lọc
 
-// 1. Lấy dữ liệu từ API
+let allFishes = []; // Lưu trữ dữ liệu gốc từ API
+let cart = JSON.parse(localStorage.getItem('vro_cart')) || []; // Giỏ hàng
+
+// 1. Khởi tạo khi load trang
+document.addEventListener("DOMContentLoaded", () => {
+    fetchFishData();
+    updateCartIcon(); // Cập nhật số lượng giỏ hàng trên menu
+});
+
+// 2. Lấy dữ liệu từ API
 async function fetchFishData() {
     try {
         const response = await fetch(API_URL);
-        if (!response.ok) throw new Error("Lỗi kết nối API");
+        if (!response.ok) throw new Error("Lỗi kết nối");
         allFishes = await response.json();
         
         if (loadingElement) loadingElement.style.display = 'none';
-        renderProducts(allFishes); // Hiển thị lần đầu
-    } catch (error) {
-        console.error(error);
-        if (loadingElement) loadingElement.innerHTML = "Lỗi tải dữ liệu cá!";
-    }
-}
-
-// 2. Hàm hiển thị cá ra màn hình
-function renderProducts(data) {
-    productGrid.innerHTML = ''; // Xóa trắng lưới trước khi vẽ lại
-
-    if (data.length === 0) {
-        productGrid.innerHTML = '<p style="text-align:center; width:100%;">Không có sản phẩm nào phù hợp.</p>';
-        return;
-    }
-
-    data.forEach(item => {
-        const name = item.name || "Cá cảnh";
-        const image = item.image || "https://placehold.co/300x200?text=No+Image";
-        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
         
-        const cardHTML = `
-            <div class="card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff;">
-                <div style="position: relative;">
-                    <img src="${image}" alt="${name}" style="width:100%; height:200px; object-fit:cover;">
-                    ${item.price > 1000000 ? '<span style="position:absolute; top:10px; right:10px; background:red; color:white; padding:2px 8px; border-radius:4px; font-size:12px;">VIP</span>' : ''}
-                </div>
-                <div class="card-body" style="padding:15px;">
-                    <h3 style="margin:0 0 10px; color:#0077b6;">${name}</h3>
-                    <p style="font-size:14px; color:#666; margin: 5px 0;">Size: ${item.size || 'N/A'}</p>
-                    <p style="font-size:16px; color:#d63031; font-weight:bold;">Giá: ${displayPrice}</p>
-                    <button onclick="xemChiTiet('${item.id}')" style="width:100%; margin-top:10px; padding:10px; background:#0096c7; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">
-                        Xem chi tiết
-                    </button>
-                </div>
-            </div>
-        `;
-        productGrid.insertAdjacentHTML('beforeend', cardHTML);
-    });
-}
-
-// 3. Hàm lọc sản phẩm theo giá
-function filterProducts() {
-    const val = document.getElementById('priceFilter').value;
-    let filtered = [];
-
-    if (val === 'all') {
-        filtered = allFishes;
-    } else if (val === '100000') {
-        filtered = allFishes.filter(f => Number(f.price) < 100000);
-    } else if (val === '500000') {
-        filtered = allFishes.filter(f => Number(f.price) >= 100000 && Number(f.price) <= 500000);
-    } else if (val === 'vip') {
-        filtered = allFishes.filter(f => Number(f.price) > 500000);
-    }
-
-    renderProducts(filtered);
-}
-
-// 4. Chuyển hướng trang chi tiết
-function xemChiTiet(id) {
-    window.location.href = `detail.html?id=${id}`;
-}
-
-// Khởi chạy ứng dụng
-fetchFishData();
-
-
-// 1. Lấy dữ liệu từ API
-async function fetchFishData() {
-    try {
-        const response = await fetch(API_URL);
-        allFishes = await response.json();
-        if (loadingElement) loadingElement.style.display = 'none';
+        // Hiển thị TOÀN BỘ sản phẩm ngay từ đầu
         renderProducts(allFishes); 
     } catch (error) {
-        if (loadingElement) loadingElement.innerHTML = "Lỗi tải dữ liệu!";
+        console.error(error);
+        if (loadingElement) loadingElement.innerHTML = "❌ Lỗi tải dữ liệu cá!";
     }
 }
 
-// 2. Hàm lọc "2 trong 1" (Tên + Giá)
-function filterProducts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const priceRange = document.getElementById('priceFilter').value;
-
-    const filtered = allFishes.filter(f => {
-        // Kiểm tra theo tên
-        const matchesName = f.name.toLowerCase().includes(searchTerm);
-        
-        // Kiểm tra theo giá
-        let matchesPrice = true;
-        const price = Number(f.price);
-
-        if (priceRange === '100000') matchesPrice = price < 100000;
-        else if (priceRange === '500000') matchesPrice = price >= 100000 && price <= 500000;
-        else if (priceRange === 'vip') matchesPrice = price > 500000;
-
-        return matchesName && matchesPrice; // Phải thỏa mãn cả 2 điều kiện
-    });
-
-    renderProducts(filtered);
-}
-
-// 3. Hàm hiển thị (Giữ nguyên logic Card của bạn)
+// 3. Hàm hiển thị cá (Dùng chung cho cả trang chủ và bộ lọc)
 function renderProducts(data) {
-    productGrid.innerHTML = '';
+    if (!productGrid) return;
+    productGrid.innerHTML = ''; 
+
     if (data.length === 0) {
-        productGrid.innerHTML = '<p style="text-align:center; width:100%; color:#999;">Không tìm thấy con cá nào khớp với yêu cầu của bạn.</p>';
+        productGrid.innerHTML = '<p style="text-align:center; width:100%; color:#999; padding:50px;">Không tìm thấy con cá nào phù hợp.</p>';
         return;
     }
 
     data.forEach(item => {
-        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
-        const cardHTML = `
-            <div class="card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <img src="${item.image}" alt="${item.name}" style="width:100%; height:200px; object-fit:cover;">
-                <div style="padding:15px;">
-                    <h3 style="margin:0; color:#0077b6;">${item.name}</h3>
-                    <p style="margin:5px 0; font-size:13px;">Tình trạng: ${item.fish_status || 'Khỏe'}</p>
-                    <p style="color:#d63031; font-weight:bold; font-size:18px;">${displayPrice}</p>
-                    <button onclick="xemChiTiet('${item.id}')" style="width:100%; padding:10px; background:#0096c7; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Xem chi tiết</button>
-                </div>
-            </div>
-        `;
-        productGrid.insertAdjacentHTML('beforeend', cardHTML);
-    });
-}
-
-function renderProducts(data) {
-    productGrid.innerHTML = '';
-    data.forEach(item => {
-        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
-        
-        // Tính giá sau giảm (Nếu bạn muốn hiển thị cả giá cũ và giá mới)
-        const discountPrice = item.price ? (Number(item.price) * 0.8).toLocaleString('vi-VN') + 'đ' : '';
+        const price = Number(item.price) || 0;
+        const displayPrice = price.toLocaleString('vi-VN') + 'đ';
+        const discountPrice = (price * 0.8).toLocaleString('vi-VN') + 'đ'; // Giảm 20%
 
         const cardHTML = `
-            <div class="card">
-                <div class="card-img-container">
-                    <div class="sale-banner">GIẢM 20%</div>
-                    <div class="sale-time">Chỉ tuần này!</div>
-                    
-                    <img src="${item.image}" alt="${item.name}">
+            <div class="card" style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div style="position: relative; height: 200px;">
+                    <div style="position: absolute; top: 10px; left: 10px; background: #e67e22; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; z-index: 1;">GIẢM 20%</div>
+                    ${price > 1000000 ? '<div style="position: absolute; top: 10px; right: 10px; background: #d35400; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; z-index: 1;">HÀNG VIP</div>' : ''}
+                    <img src="${item.image || item.avatar}" alt="${item.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
                 </div>
-                <div class="card-body">
-                    <h3>${item.name}</h3>
-                    <p class="status">Size: ${item.size} | ${item.fish_status}</p>
-                    
-                    <p class="price">
-                        <span style="text-decoration: line-through; color: #999; font-size: 0.9rem;">${displayPrice}</span><br>
-                        <span style="color: #0077b6;">${discountPrice}</span>
+                <div style="padding: 15px;">
+                    <h3 style="margin: 0 0 10px; color: #0077b6; font-size: 1.1rem;">${item.name}</h3>
+                    <p style="font-size: 13px; color: #777; margin-bottom: 10px;">Size: ${item.size || '7-10cm'} | ${item.fish_status || 'Khỏe mạnh'}</p>
+                    <p style="margin-bottom: 15px;">
+                        <span style="text-decoration: line-through; color: #bbb; font-size: 0.9rem;">${displayPrice}</span><br>
+                        <span style="color: #d63031; font-weight: bold; font-size: 1.2rem;">${discountPrice}</span>
                     </p>
-                    
-                    <button class="btn-buy" onclick="xemChiTiet('${item.id}')">Xem chi tiết</button>
+                    <div style="display: flex; gap: 5px;">
+                        <button onclick="xemChiTiet('${item.id}')" style="flex: 1; padding: 8px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: bold;">Chi tiết</button>
+                        <button onclick="addToCart('${item.id}')" style="flex: 1; padding: 8px; background: #0077b6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">+ Giỏ</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -279,11 +193,61 @@ function renderProducts(data) {
     });
 }
 
+// 4. Bộ lọc 2 trong 1 (Tên + Giá)
+function filterProducts() {
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || "";
+    const priceRange = document.getElementById('priceFilter')?.value || "all";
 
-fetchFishes();
+    const filtered = allFishes.filter(f => {
+        const matchesName = f.name.toLowerCase().includes(searchTerm);
+        let matchesPrice = true;
+        const p = Number(f.price);
 
+        if (priceRange === '100000') matchesPrice = p < 100000;
+        else if (priceRange === '500000') matchesPrice = p >= 100000 && p <= 500000;
+        else if (priceRange === 'vip') matchesPrice = p > 500000;
+
+        return matchesName && matchesPrice;
+    });
+
+    renderProducts(filtered); // Hiện toàn bộ kết quả sau khi lọc
+}
+
+// 5. Logic Giỏ hàng & Chuyển hướng
 function xemChiTiet(id) {
     window.location.href = `detail.html?id=${id}`;
-}</script>
+}
+
+function addToCart(id) {
+    const fish = allFishes.find(f => f.id === id);
+    if (!fish) return;
+
+    const existingItem = cart.find(item => item.id === id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: fish.id,
+            name: fish.name,
+            price: Number(fish.price) * 0.8,
+            image: fish.image || fish.avatar,
+            quantity: 1
+        });
+    }
+    
+    localStorage.setItem('vro_cart', JSON.stringify(cart));
+    updateCartIcon();
+    alert(`Đã thêm ${fish.name} vào giỏ!`);
+}
+
+function updateCartIcon() {
+    const cartBtn = document.getElementById('cart-btn');
+    const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+    if (cartBtn) cartBtn.innerText = `Giỏ hàng (${totalQty})`;
+}
+
+
+
+</script>
 </body>
 </html>
