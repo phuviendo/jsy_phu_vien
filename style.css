@@ -1,0 +1,372 @@
+/* --- 1. BIẾN MÀU SẮC CHỦ ĐẠO --- */
+:root {
+    --primary-blue: #0077b6;    /* Xanh dương đậm (Header/Nút) */
+    --light-blue: #00b4d8;      /* Xanh dương tươi (Hover) */
+    --soft-blue: #caf0f8;       /* Xanh cực nhạt (Nền) */
+    --sale-red: #d63031;        /* Đỏ cho giá mới/giảm giá */
+    --text-main: #023e8a;       /* Màu chữ xanh đen */
+    --shadow: 0 10px 25px rgba(0, 119, 182, 0.1);
+}
+
+/* --- 2. RESET CƠ BẢN --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background-color: #f0f9ff;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* --- 3. NAVBAR ĐỒNG BỘ --- */
+.main-navbar {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    color: var(--primary-blue);
+    font-weight: 800;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-links a:hover { color: var(--primary-blue); }
+
+/* Dropdown Menu */
+.dropdown { position: relative; }
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: white;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+.dropdown:hover .dropdown-content { display: block; }
+.dropdown-content a {
+    padding: 12px 16px;
+    display: block;
+    font-size: 14px;
+}
+
+/* --- 4. HERO SECTION --- */
+.hero {
+    background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* --- 5. BỘ LỌC (SEARCH & FILTER) --- */
+.filter-controls {
+    background: white;
+    max-width: 900px;
+    margin: -40px auto 30px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+}
+
+input, select {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px;
+    border: 2px solid var(--soft-blue);
+    border-radius: 10px;
+    outline: none;
+}
+
+/* --- 6. GRID VÀ CARD SẢN PHẨM (Đồng bộ Full & CK) --- */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Mặc định 4 cột */
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: 0.3s;
+    border: 1px solid var(--soft-blue);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow);
+}
+
+.card-img-container {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Banner Giảm Giá */
+.sale-banner {
+    position: absolute;
+    top: 0; left: 0;
+    background: #ff5900;
+    color: white;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-bottom-right-radius: 10px;
+    z-index: 5;
+    animation: pulse 2s infinite;
+}
+
+.vip-tag {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: #ffd700;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.card-body h3 {
+    font-size: 1rem;
+    color: var(--primary-blue);
+    margin-bottom: 8px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.price-new {
+    color: var(--sale-red);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* NÚT BẤM ĐỒNG BỘ */
+.btn-buy {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.btn-buy:hover { background: var(--text-main); }
+
+#cart-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* --- 7. RESPONSIVE --- */
+@media (max-width: 1024px) {
+    .grid-container { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .grid-container { grid-template-columns: 1fr; }
+    .nav-links { display: none; } /* Có thể làm menu burger sau */
+    .filter-controls { flex-direction: column; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+
+
+/* --- FOOTER CHUYÊN NGHIỆP --- */
+.main-footer {
+    background-color: #fff;
+    padding: 60px 0 20px;
+    border-top: 1px solid #eee;
+    color: #444;
+    margin-top: 50px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 40px;
+}
+
+.footer-col h4 {
+    color: var(--primary-blue);
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 2px;
+    background: var(--primary-blue);
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    text-decoration: none;
+    color: #666;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: var(--primary-blue);
+    padding-left: 5px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 20px 0;
+    color: #666;
+}
+
+.footer-contact li {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Social Icons */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.social-icons a {
+    width: 35px;
+    height: 35px;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #444;
+    transition: 0.3s;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.social-icons a:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.bct-badge img {
+    width: 150px;
+    margin-top: 10px;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 40px;
+    margin-top: 40px;
+    border-top: 1px solid #f1f1f1;
+    font-size: 13px;
+    color: #999;
+}
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}

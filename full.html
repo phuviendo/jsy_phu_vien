@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="main-navbar">
+    <div class="nav-container">
+        <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
+        <ul class="nav-links">
+            <li><a href="ck.html" id="nav-home">Trang Chủ</a></li>
+            <li><a href="full.html" id="nav-admin">Tất cả cá</a></li><button id="cart-btn">Giỏ hàng (0)</button>
+        </ul>
+    </div>
+     
+</nav>
+        
+    </header>
+
+    <section class="hero">
+        <h2>Chuyên cung cấp các loại cá chất lượng cao</h2>
+        <p>Từ cá lóc nuôi nhà làm đến các loại cá cảnh nhập khẩu.</p>
+    </section>
+
+    <main class="container">
+    <div class="filter-controls" style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+        
+        <div class="search-box" style="flex: 1; min-width: 250px;">
+            <input type="text" id="searchInput" 
+                   placeholder="Nhập tên cá cần tìm..." 
+                   oninput="filterProducts()" 
+                   style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; outline: none;">
+        </div>
+
+        <div class="price-box">
+            <select id="priceFilter" onchange="filterProducts()" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer;">
+                <option value="all">--- Tất cả mức giá ---</option>
+                <option value="100000">Dưới 100.000đ</option>
+                <option value="500000">100.000đ - 500.000đ</option>
+                <option value="vip">Cá VIP (> 500.000đ)</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="container">
+    <div id="product-grid" class="grid-container">
+        </div>
+  <footer class="main-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <div class="footer-logo">🐟 VỰA CÁ KIỂNG VRO</div>
+            <p class="footer-desc">
+                Chuyên cung cấp các dòng cá cảnh thủy sinh, cá lóc cảnh và phụ kiện hồ cá chất lượng cao. Uy tín tạo nên thương hiệu.
+            </p>
+            <ul class="footer-contact">
+                <li><i class="fas fa-map-marker-alt"></i> Địa chỉ: 123 Đường ABC, Quận X, TP.HCM</li>
+                <li><i class="fas fa-phone-alt"></i> Hotline: 090x xxx xxx</li>
+                <li><i class="fas fa-envelope"></i> Email: contact@vroaquarium.com</li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Hỗ Trợ Khách Hàng</h4>
+            <ul>
+                <li><a href="#">Tra cứu đơn hàng</a></li>
+                <li><a href="#">Chính sách vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn thanh toán</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Tìm Hiểu Thêm</h4>
+            <ul>
+                <li><a href="#">Giới thiệu cửa hàng</a></li>
+                <li><a href="#">Danh sách sản phẩm</a></li>
+                <li><a href="#">Kinh nghiệm nuôi cá</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Theo Dõi Chúng Tôi</h4>
+            <div class="social-icons">
+                <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="zalo">Zalo</a>
+                <a href="#" class="tiktok"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <div class="bct-badge">
+                <img src="https://webmedia.com.vn/images/2021/09/da-thong-bao-bo-cong-thuong.png" alt="Đã thông báo bộ công thương">
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>© 2026 Copyright belong to VRO Aquarium | Provided by VRO Dev Team</p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script>const API_URL = 'https://697580a2265838bbea977685.mockapi.io/books';
+
+const productGrid = document.getElementById('product-grid');
+const loadingElement = document.getElementById('loading');
+let allFishes = []; // Biến lưu trữ dữ liệu gốc để lọc
+
+// 1. Lấy dữ liệu từ API
+async function fetchFishData() {
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Lỗi kết nối API");
+        allFishes = await response.json();
+        
+        if (loadingElement) loadingElement.style.display = 'none';
+        renderProducts(allFishes); // Hiển thị lần đầu
+    } catch (error) {
+        console.error(error);
+        if (loadingElement) loadingElement.innerHTML = "Lỗi tải dữ liệu cá!";
+    }
+}
+
+// 2. Hàm hiển thị cá ra màn hình
+function renderProducts(data) {
+    productGrid.innerHTML = ''; // Xóa trắng lưới trước khi vẽ lại
+
+    if (data.length === 0) {
+        productGrid.innerHTML = '<p style="text-align:center; width:100%;">Không có sản phẩm nào phù hợp.</p>';
+        return;
+    }
+
+    data.forEach(item => {
+        const name = item.name || "Cá cảnh";
+        const image = item.image || "https://placehold.co/300x200?text=No+Image";
+        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
+        
+        const cardHTML = `
+            <div class="card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff;">
+                <div style="position: relative;">
+                    <img src="${image}" alt="${name}" style="width:100%; height:200px; object-fit:cover;">
+                    ${item.price > 1000000 ? '<span style="position:absolute; top:10px; right:10px; background:red; color:white; padding:2px 8px; border-radius:4px; font-size:12px;">VIP</span>' : ''}
+                </div>
+                <div class="card-body" style="padding:15px;">
+                    <h3 style="margin:0 0 10px; color:#0077b6;">${name}</h3>
+                    <p style="font-size:14px; color:#666; margin: 5px 0;">Size: ${item.size || 'N/A'}</p>
+                    <p style="font-size:16px; color:#d63031; font-weight:bold;">Giá: ${displayPrice}</p>
+                    <button onclick="xemChiTiet('${item.id}')" style="width:100%; margin-top:10px; padding:10px; background:#0096c7; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">
+                        Xem chi tiết
+                    </button>
+                </div>
+            </div>
+        `;
+        productGrid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
+
+// 3. Hàm lọc sản phẩm theo giá
+function filterProducts() {
+    const val = document.getElementById('priceFilter').value;
+    let filtered = [];
+
+    if (val === 'all') {
+        filtered = allFishes;
+    } else if (val === '100000') {
+        filtered = allFishes.filter(f => Number(f.price) < 100000);
+    } else if (val === '500000') {
+        filtered = allFishes.filter(f => Number(f.price) >= 100000 && Number(f.price) <= 500000);
+    } else if (val === 'vip') {
+        filtered = allFishes.filter(f => Number(f.price) > 500000);
+    }
+
+    renderProducts(filtered);
+}
+
+// 4. Chuyển hướng trang chi tiết
+function xemChiTiet(id) {
+    window.location.href = `detail.html?id=${id}`;
+}
+
+// Khởi chạy ứng dụng
+fetchFishData();
+
+
+// 1. Lấy dữ liệu từ API
+async function fetchFishData() {
+    try {
+        const response = await fetch(API_URL);
+        allFishes = await response.json();
+        if (loadingElement) loadingElement.style.display = 'none';
+        renderProducts(allFishes); 
+    } catch (error) {
+        if (loadingElement) loadingElement.innerHTML = "Lỗi tải dữ liệu!";
+    }
+}
+
+// 2. Hàm lọc "2 trong 1" (Tên + Giá)
+function filterProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const priceRange = document.getElementById('priceFilter').value;
+
+    const filtered = allFishes.filter(f => {
+        // Kiểm tra theo tên
+        const matchesName = f.name.toLowerCase().includes(searchTerm);
+        
+        // Kiểm tra theo giá
+        let matchesPrice = true;
+        const price = Number(f.price);
+
+        if (priceRange === '100000') matchesPrice = price < 100000;
+        else if (priceRange === '500000') matchesPrice = price >= 100000 && price <= 500000;
+        else if (priceRange === 'vip') matchesPrice = price > 500000;
+
+        return matchesName && matchesPrice; // Phải thỏa mãn cả 2 điều kiện
+    });
+
+    renderProducts(filtered);
+}
+
+// 3. Hàm hiển thị (Giữ nguyên logic Card của bạn)
+function renderProducts(data) {
+    productGrid.innerHTML = '';
+    if (data.length === 0) {
+        productGrid.innerHTML = '<p style="text-align:center; width:100%; color:#999;">Không tìm thấy con cá nào khớp với yêu cầu của bạn.</p>';
+        return;
+    }
+
+    data.forEach(item => {
+        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
+        const cardHTML = `
+            <div class="card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <img src="${item.image}" alt="${item.name}" style="width:100%; height:200px; object-fit:cover;">
+                <div style="padding:15px;">
+                    <h3 style="margin:0; color:#0077b6;">${item.name}</h3>
+                    <p style="margin:5px 0; font-size:13px;">Tình trạng: ${item.fish_status || 'Khỏe'}</p>
+                    <p style="color:#d63031; font-weight:bold; font-size:18px;">${displayPrice}</p>
+                    <button onclick="xemChiTiet('${item.id}')" style="width:100%; padding:10px; background:#0096c7; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Xem chi tiết</button>
+                </div>
+            </div>
+        `;
+        productGrid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
+
+function renderProducts(data) {
+    productGrid.innerHTML = '';
+    data.forEach(item => {
+        const displayPrice = item.price ? Number(item.price).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
+        
+        // Tính giá sau giảm (Nếu bạn muốn hiển thị cả giá cũ và giá mới)
+        const discountPrice = item.price ? (Number(item.price) * 0.8).toLocaleString('vi-VN') + 'đ' : '';
+
+        const cardHTML = `
+            <div class="card">
+                <div class="card-img-container">
+                    <div class="sale-banner">GIẢM 20%</div>
+                    <div class="sale-time">Chỉ tuần này!</div>
+                    
+                    <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="card-body">
+                    <h3>${item.name}</h3>
+                    <p class="status">Size: ${item.size} | ${item.fish_status}</p>
+                    
+                    <p class="price">
+                        <span style="text-decoration: line-through; color: #999; font-size: 0.9rem;">${displayPrice}</span><br>
+                        <span style="color: #0077b6;">${discountPrice}</span>
+                    </p>
+                    
+                    <button class="btn-buy" onclick="xemChiTiet('${item.id}')">Xem chi tiết</button>
+                </div>
+            </div>
+        `;
+        productGrid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
+
+
+fetchFishes();
+
+function xemChiTiet(id) {
+    window.location.href = `detail.html?id=${id}`;
+}</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+/* --- 1. THIẾT LẬP CHUNG --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Quan trọng nhất để không bị dính lẹo */
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --primary: #0077b6;
+    --dark: #023e8a;
+    --light-bg: #f0f4f8;
+    --white: #ffffff;
+    --gray: #64748b;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background: var(--light-bg);
+    color: #334155;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- 2. SIDEBAR --- */
+.sidebar {
+    width: 260px;
+    background: var(--dark);
+    color: white;
+    padding: 40px 20px;
+    position: fixed;
+    height: 100%;
+    z-index: 100;
+}
+
+.sidebar .logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 50px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: all 0.3s;
+}
+
+.sidebar nav a.active, .sidebar nav a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* --- 3. MAIN CONTENT --- */
+.main-content {
+    margin-left: 260px; /* Nhường chỗ cho sidebar */
+    padding: 40px;
+    width: calc(100% - 260px);
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* Thẻ thống kê (Stats) */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px; /* Khoảng cách giữa các ô thống kê */
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.stat-card .icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-right: 20px;
+}
+
+.icon.blue { background: #e0f2fe; color: var(--primary); }
+.icon.gold { background: #fef3c7; color: #d97706; }
+
+/* --- 4. FORM NHẬP LIỆU (Sửa lỗi dính lẹo) --- */
+.content-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 35px; /* Tăng padding để nội dung bên trong thoáng hơn */
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+}
+
+.card-title {
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    color: var(--dark);
+    border-left: 5px solid var(--primary);
+    padding-left: 15px;
+}
+
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px; /* Khoảng cách giữa các ô input */
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Khoảng cách giữa Label và Input */
+}
+
+.input-box label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray);
+}
+
+.input-box input {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+    background: #fcfcfc;
+}
+
+.input-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.1);
+}
+
+.form-buttons {
+    grid-column: 1 / -1;
+    text-align: right;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* --- 5. BẢNG DANH SÁCH --- */
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Tạo khoảng cách giữa các hàng */
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: var(--gray);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+img.table-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* Nút bấm trong bảng */
+.btn-edit { color: var(--primary); background: #e0f2fe; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px; }
+.btn-delete { color: #ef4444; background: #fee2e2; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+
+
+
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Biểu đồ to hơn Form */
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+.vertical-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.row-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn-primary-admin {
+    background: #0077b6;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary-admin:hover {
+    background: #023e8a;
+    transform: translateY(-2px);
+}
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+    .admin-grid { grid-template-columns: 1fr; }
+}

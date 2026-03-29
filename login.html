@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="login.css">
+</head>  
+</body>
+</html><div class="login-container">
+        <h2>🐟 Đăng nhập</h2>
+        <p id="login-msg"></p>
+        <form id="login-form">
+            <div class="input-group">
+                <label>Tài khoản</label>
+                <input type="text" id="username" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="password" placeholder="" required>
+            </div>
+            <button type="submit" class="btn-buy" style="width: 100%; padding: 12px; font-size: 16px;">Vào hệ thống</button>
+        </form>
+        <p style="margin-top: 15px; font-size: 13px; color: #666;"></p>
+    </div>
+<script>
+    // Sửa đoạn kiểm tra trong login.html
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    // 1. Kiểm tra tài khoản mặc định
+    if (user === 'admin' && pass === '123456') {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'ck.html';
+        return;
+    }
+
+    // 2. Kiểm tra tài khoản đã đăng ký trong localStorage
+    const savedAccount = localStorage.getItem('account_' + user);
+    if (savedAccount) {
+        const parsedAccount = JSON.parse(savedAccount);
+        if (parsedAccount.password === pass) {
+            localStorage.setItem('isLoggedIn', 'true');
+            window.location.href = 'ck.html';
+            return;
+        }
+    }
+
+    document.getElementById('login-msg').innerText = '❌ Sai tài khoản hoặc mật khẩu!';
+});
+    </script>
+</body>
+</html>

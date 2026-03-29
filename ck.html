@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vựa Cá Kiểng VRO - Trang Chủ</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Phụ Kiện ▼</a>
+                    <div class="dropdown-content">
+                        <a href="ho.html">Hồ cá</a>
+                        <a href="#">Thức ăn</a>
+                        <a href="#">Lọc & Sủi</a>
+                    </div>
+                </li>
+                <li><a href="ck.html">Trang Chủ</a></li>
+                <li><a href="full.html">Tất cả cá</a></li>
+                <li><button id="cart-btn">Giỏ hàng (0)</button></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Chuyên cung cấp các loại cá chất lượng cao</h2>
+            <p>Từ cá lóc nuôi nhà làm đến các loại cá cảnh nhập khẩu.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="filter-controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm nhanh tên cá..." oninput="filterProducts()">
+            </div>
+            <div class="price-box">
+                <select id="priceFilter" onchange="filterProducts()">
+                    <option value="all">Tất cả giá</option>
+                    <option value="100000">Dưới 100k</option>
+                    <option value="500000">100k - 500k</option>
+                    <option value="vip">Cá VIP (> 500k)</option>
+                </select>
+            </div>
+        </div>
+
+        <h3 class="section-title" style="margin-bottom: 20px; color: var(--primary-blue); border-left: 4px solid var(--primary-blue); padding-left: 10px;">
+            Sản phẩm tiêu biểu
+        </h3>
+        
+        <div id="loading" style="text-align: center; padding: 20px; color: var(--primary-blue);">
+            Đang tải dữ liệu...
+        </div>
+
+        <div id="product-grid" class="grid-container"></div>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Hiển thị 8 sản phẩm mới nhất</p>
+            <a href="full.html" class="btn-view-all" style="text-decoration: none; background: var(--primary-blue); color: white; padding: 12px 35px; border-radius: 50px; font-weight: bold; display: inline-block; transition: 0.3s;">
+                XEM TẤT CẢ SẢN PHẨM
+            </a>
+        </div>
+    </main>
+
+   <footer class="main-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <div class="footer-logo">🐟 VỰA CÁ KIỂNG</div>
+            <p class="footer-desc">
+                Chuyên cung cấp các dòng cá cảnh thủy sinh, cá lóc cảnh và phụ kiện hồ cá chất lượng cao. Uy tín tạo nên thương hiệu.
+            </p>
+            <ul class="footer-contact">
+                <li><i class="fas fa-map-marker-alt"></i> Địa chỉ: 123 Đường ABC, Quận X, TP.HCM</li>
+                <li><i class="fas fa-phone-alt"></i> Hotline: 090x xxx xxx</li>
+                <li><i class="fas fa-envelope"></i> Email: contact@vroaquarium.com</li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Hỗ Trợ Khách Hàng</h4>
+            <ul>
+                <li><a href="#">Tra cứu đơn hàng</a></li>
+                <li><a href="#">Chính sách vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn thanh toán</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Tìm Hiểu Thêm</h4>
+            <ul>
+                <li><a href="#">Giới thiệu cửa hàng</a></li>
+                <li><a href="#">Danh sách sản phẩm</a></li>
+                <li><a href="#">Kinh nghiệm nuôi cá</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Theo Dõi Chúng Tôi</h4>
+            <div class="social-icons">
+                <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="zalo">Zalo</a>
+                <a href="#" class="tiktok"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <div class="bct-badge">
+                <img src="https://webmedia.com.vn/images/2021/09/da-thong-bao-bo-cong-thuong.png" alt="Đã thông báo bộ công thương">
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>© 2026 Copyright belong to VRO Aquarium | Provided by VRO Dev Team</p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="ck.js"></script>
+</body>
+</html>

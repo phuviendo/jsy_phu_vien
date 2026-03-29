@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sản Phẩm | Vựa Cá Kiểng</title>
+    <link rel="stylesheet" href="style.css"> 
+<link rel="stylesheet" href="detail.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS bổ sung riêng cho trang chi tiết */
+        .product-detail-card {
+            background: white; border-radius: 12px; display: grid;
+            grid-template-columns: 1.2fr 1.5fr 0.8fr; gap: 30px; padding: 30px;
+            margin-top: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .info-col .product-name { font-size: 28px; color: var(--primary); margin-bottom: 10px; }
+        .price-box { background: var(--bg); padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .specs-grid p { padding: 8px; border-bottom: 1px solid #edf2f7; font-size: 14px; }
+        .description-block { background: white; margin-top: 30px; border-radius: 12px; padding: 30px; }
+        .desc-content { max-height: 200px; overflow: hidden; transition: 0.5s; position: relative; }
+        .desc-content.expanded { max-height: 2000px; }
+        .read-more-overlay { text-align: center; padding-top: 40px; margin-top: -60px; background: linear-gradient(to top, white 40%, transparent); position: relative; }
+        
+        @media (max-width: 992px) { .product-detail-card { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header class="main-navbar">
+        <div class="container nav-container">
+            <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
+            <ul class="nav-links">
+                <li><a href="ck.html">Trang Chủ</a></li>
+                <li><a href="full.html">Tất cả cá</a></li>
+                <li><button id="cart-btn">Giỏ hàng (0)</button></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="product-detail-content">
+            <p style="text-align:center; padding: 50px;">Đang tải thông tin cá...</p>
+        </div>
+
+        <section style="margin: 50px 0;">
+            <h3 style="margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px;">Sản phẩm tương tự</h3>
+            <div id="related-products" class="grid-container"></div>
+        </section>
+    </main>
+  <footer class="main-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <div class="footer-logo">🐟 VỰA CÁ KIỂNG VRO</div>
+            <p class="footer-desc">
+                Chuyên cung cấp các dòng cá cảnh thủy sinh, cá lóc cảnh và phụ kiện hồ cá chất lượng cao. Uy tín tạo nên thương hiệu.
+            </p>
+            <ul class="footer-contact">
+                <li><i class="fas fa-map-marker-alt"></i> Địa chỉ: 123 Đường ABC, Quận X, TP.HCM</li>
+                <li><i class="fas fa-phone-alt"></i> Hotline: 090x xxx xxx</li>
+                <li><i class="fas fa-envelope"></i> Email: contact@vroaquarium.com</li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Hỗ Trợ Khách Hàng</h4>
+            <ul>
+                <li><a href="#">Tra cứu đơn hàng</a></li>
+                <li><a href="#">Chính sách vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn thanh toán</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Tìm Hiểu Thêm</h4>
+            <ul>
+                <li><a href="#">Giới thiệu cửa hàng</a></li>
+                <li><a href="#">Danh sách sản phẩm</a></li>
+                <li><a href="#">Kinh nghiệm nuôi cá</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Theo Dõi Chúng Tôi</h4>
+            <div class="social-icons">
+                <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="zalo">Zalo</a>
+                <a href="#" class="tiktok"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <div class="bct-badge">
+                <img src="https://webmedia.com.vn/images/2021/09/da-thong-bao-bo-cong-thuong.png" alt="Đã thông báo bộ công thương">
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>© 2026 Copyright belong to VRO Aquarium | Provided by VRO Dev Team</p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>const API_URL = "https://697580a2265838bbea977685.mockapi.io/books";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) {
+        loadFishDetail(id);
+    } else {
+        const content = document.getElementById('product-detail-content');
+        if (content) content.innerHTML = "<p>Không tìm thấy mã sản phẩm!</p>";
+    }
+});
+
+async function loadFishDetail(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+        const fish = await response.json();
+        
+        const price = Number(fish.price) || 0;
+        const oldPrice = Math.round(price * 1.2); // Tăng 20% cho giá cũ chuyên nghiệp hơn
+        const img = fish.avatar || fish.image || 'https://placehold.co/500x400?text=VRO+Aquarium';
+
+        document.getElementById('product-detail-content').innerHTML = `
+            <div class="product-detail-card">
+                <div class="gallery-col">
+                    <div class="main-img-wrapper">
+                        <img src="${img}" id="main-img" alt="${fish.name}">
+                        <div class="sale-badge">GIẢM 20%</div>
+                    </div>
+                </div>
+
+                <div class="info-col">
+                    <h1 class="product-name">${fish.name}</h1>
+                    <p class="stock-status">Tình trạng: <span>${fish.fish_status || 'Sẵn hàng (Khỏe mạnh)'}</span></p>
+                    
+                    <div class="price-box">
+                        <span class="price-new">${price.toLocaleString()}đ</span>
+                        <span class="price-old">${oldPrice.toLocaleString()}đ</span>
+                    </div>
+
+                    <div class="short-specs">
+                        <p><b>📏 Kích thước:</b> ${fish.size || '7-10'} cm</p>
+                        <p><b>😋 Thức ăn:</b> ${fish.thucan || 'Cám, sâu đông lạnh, trùn chỉ'}</p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-buy" onclick="addToCart('${fish.id}')">THÊM VÀO GIỎ HÀNG</button>
+                        <a href="https://zalo.me/090xxxxxxx" target="_blank" class="btn-zalo">CHAT ZALO TƯ VẤN</a>
+                    </div>
+                </div>
+
+                <div class="trust-col">
+                    <h4>AN TÂM MUA SẮM</h4>
+                    <div class="trust-item">✅ Cá dưỡng kỹ từ ${fish.start_date || 'tại trại'}</div>
+                    <div class="trust-item">✅ Đúng hình, đúng clip</div>
+                    <div class="trust-item">✅ Bảo hành cá sống 100%</div>
+                    <div class="trust-item">✅ Hỗ trợ kỹ thuật trọn đời</div>
+                </div>
+            </div>
+
+            <div class="description-block">
+                <h2 class="desc-title">Mô Tả Sản Phẩm</h2>
+                
+                <div class="desc-content" id="desc-box">
+                    <h3 class="info-header">Thông Tin Sản Phẩm - Vựa Cá Kiểng VRO</h3>
+                    <p><b>Dòng cá:</b> ${fish.name}</p>
+                    
+                    <div class="specs-details">
+                        <p><b>📍 Môi trường sống:</b> Nước ngọt (Thủy sinh/Hồ kính)</p>
+                        <p><b>🌡️ Nhiệt độ:</b> 24 - 30°C</p>
+                        <p><b>🧪 Độ pH:</b> 6.5 - 7.5</p>
+                        <p><b>✨ Tập tính:</b> ${fish.behavior || 'Dễ thích nghi, phù hợp cho người mới.'}</p>
+                    </div>
+
+                    <div class="commitment-text">
+                        <p>✨ <b>Trại cá VRO</b> là đơn vị chuyên cung cấp những dòng cá cảnh tuyển chọn, được thuần dưỡng kỹ lưỡng. Chúng tôi cam kết mang đến những cá thể có màu sắc vượt trội và sức khỏe tốt nhất.</p>
+                        <p>✨ Cá nuôi dưỡng tại trại đảm bảo không bệnh tật, rỏ nguồn gốc.</p>
+                        <p>⚠️ <b>QUAN TRỌNG:</b> Trại có chính sách <b>BẢO HÀNH CÁ SỐNG</b> đến tận tay khách hàng. Khi nhận hàng vui lòng quay video kiểm tra thùng cá để shop xử lý ngay nếu có hư hao.</p>
+                    </div>
+
+                    <div class="shipping-box">
+                        <h4>🚩 Vận Chuyển:</h4>
+                        <ul>
+                            <li><b>Nội thành TP.HCM:</b> Hỏa tốc 1-2 tiếng (Grab/Ahamove)</li>
+                            <li><b>Tỉnh Miền Nam & Trung:</b> 1-2 ngày vận chuyển chuyên dụng</li>
+                            <li><b>Tỉnh Miền Bắc:</b> 2-3 ngày</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="margin-top:20px"><i>Cảm ơn quý khách đã tin tưởng và ủng hộ VRO Aquarium! ❤️ ❤️ ❤️</i></p>
+                </div>
+
+                <div class="read-more-overlay">
+                    <button class="btn-toggle" onclick="toggleDesc(this)">Xem thêm mô tả</button>
+                </div>
+            </div>
+        `;
+        
+        loadRelatedFish(id);
+    } catch (e) {
+        console.error(e);
+        document.getElementById('product-detail-content').innerHTML = "<p>Lỗi tải dữ liệu cá!</p>";
+    }
+}
+
+// Hàm thu gọn/mở rộng mô tả
+function toggleDesc(btn) {
+    const box = document.getElementById('desc-box');
+    box.classList.toggle('expanded');
+    btn.innerText = box.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm mô tả';
+}
+
+// Load sản phẩm liên quan (giữ nguyên logic của bạn nhưng tối ưu giao diện)
+async function loadRelatedFish(currentId) {
+    try {
+        const res = await fetch(API_URL);
+        const all = await res.json();
+        const related = all.filter(f => f.id !== currentId).slice(0, 4);
+        
+        const container = document.getElementById('related-products');
+        if (container) {
+            container.innerHTML = related.map(f => `
+                <div class="card">
+                    <div class="card-img-container">
+                        <img src="${f.avatar || f.image || 'https://placehold.co/300x200'}" alt="${f.name}">
+                    </div>
+                    <div class="card-body">
+                        <h3>${f.name}</h3>
+                        <p class="price-new">${Number(f.price).toLocaleString()}đ</p>
+                        <button class="btn-buy" onclick="window.location.href='detail.html?id=${f.id}'">XEM CHI TIẾT</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        console.error("Lỗi load cá liên quan", e);
+    }
+}
+
+function addToCart(id) {
+    alert("Đã thêm vào giỏ hàng! (Chức năng đang cập nhật)");
+}</script>
+</body>
+</html>

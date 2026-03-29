@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - Vựa Cá Sạch</title>
+    <style>
+        :root {
+            --primary-color: #0077b6;
+            --secondary-color: #00b4d8;
+            --bg-gradient: linear-gradient(135deg, #a8dadc 0%, #457b9d 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { color: var(--primary-color); margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        
+        .input-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold;
+            color: #1d3557;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 8px rgba(0,180,216,0.3);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-register:hover { background: #023e8a; }
+
+        .footer-link { margin-top: 20px; font-size: 14px; }
+        .footer-link a { color: var(--primary-color); text-decoration: none; font-weight: bold; }
+        
+        #msg { margin-bottom: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <h2>🐟 Tạo tài khoản</h2>
+        <div id="msg"></div>
+        
+        <form id="register-form">
+            <div class="input-group">
+                <label>Tên tài khoản</label>
+                <input type="text" id="reg-user" placeholder="Ví dụ: admin2" required>
+            </div>
+            <div class="input-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="reg-pass" placeholder="Nhập mật khẩu" required>
+            </div>
+            <div class="input-group">
+                <label>Xác nhận mật khẩu</label>
+                <input type="password" id="confirm-pass" placeholder="Nhập lại mật khẩu" required>
+            </div>
+            <button type="submit" class="btn-register">Đăng ký ngay</button>
+        </form>
+
+        <div class="footer-link">
+            Đã có tài khoản? <a href="login.html">Đăng nhập tại đây</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const user = document.getElementById('reg-user').value;
+            const pass = document.getElementById('reg-pass').value;
+            const confirm = document.getElementById('confirm-pass').value;
+            const msg = document.getElementById('msg');
+
+            // 1. Kiểm tra mật khẩu khớp nhau không
+            if (pass !== confirm) {
+                msg.style.color = "red";
+                msg.innerText = "❌ Mật khẩu xác nhận không khớp!";
+                return;
+            }
+
+            // 2. Lưu tài khoản vào localStorage (Giả lập database)
+            // Lưu ý: Trong thực tế bạn sẽ fetch API để lưu vào DB
+            const userData = { username: user, password: pass };
+            localStorage.setItem('account_' + user, JSON.stringify(userData));
+
+            msg.style.color = "green";
+            msg.innerText = "✅ Đăng ký thành công! Đang chuyển hướng...";
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
