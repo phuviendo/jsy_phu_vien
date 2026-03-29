@@ -1,123 +1,100 @@
-// 1. Cấu hình API và chọn các phần tử
-const API_URL = "https://697580a2265838bbea977685.mockapi.io/books";
+const API_URL = 'https://697580a2265838bbea977685.mockapi.io/books';
+const productGrid = document.getElementById('product-grid');
+const loadingElement = document.getElementById('loading');
 
-// Chọn các phần tử (Dùng để kiểm tra tránh lỗi null)
-const fishForm = document.getElementById('fishForm');
-const btnAdd = document.getElementById('btnAdd');
-const btnUpdate = document.getElementById('btnUpdate');
-const fishIdInput = document.getElementById('fishId');
+let allFishes = [];
+let isShowAll = false; // Mặc định chỉ hiện 2 hàng (8 con)
 
-// 2. Tự động chạy khi trang web tải xong
-document.addEventListener("DOMContentLoaded", () => {
-    loadDashboardData();
-    setupFormHandler();
-    checkEditMode(); // Kiểm tra xem có đang sửa cá không
-});
-
-// 3. Hàm lấy dữ liệu và đổ vào Dashboard (Biểu đồ + Thống kê)
-async function loadDashboardData() {
-    const totalFishEl = document.getElementById('totalFish');
-    const totalValueEl = document.getElementById('totalValue');
-    const chartCanvas = document.getElementById('fishChart');
-
+// 1. Fetch dữ liệu
+async function fetchFishData() {
     try {
         const response = await fetch(API_URL);
-        const data = await response.json();
-
-        // Cập nhật thống kê nếu tồn tại phần tử trên trang
-        if (totalFishEl) totalFishEl.innerText = data.length;
-        if (totalValueEl) {
-            const totalValue = data.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
-            totalValueEl.innerText = totalValue.toLocaleString() + 'đ';
-        }
-
-        // Vẽ biểu đồ nếu có canvas
-        if (chartCanvas) {
-            const topFish = [...data].sort((a, b) => b.price - a.price).slice(0, 6);
-            renderChart(topFish, chartCanvas);
-        }
+        allFishes = await response.json();
+        if (loadingElement) loadingElement.style.display = 'none';
+        renderProducts(); 
     } catch (error) {
-        console.error("Lỗi Dashboard:", error);
+        if (loadingElement) loadingElement.innerHTML = "Lỗi tải dữ liệu!";
     }
 }
 
-// 4. Hàm vẽ biểu đồ
-function renderChart(fishData, canvas) {
-    const ctx = canvas.getContext('2d');
-    if (window.myChart) window.myChart.destroy();
+// 2. Render sản phẩm (Gọn gàng hơn)
+function renderProducts() {
+    if (!productGrid) return;
+    productGrid.innerHTML = '';
 
-    window.myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: fishData.map(f => f.name),
-            datasets: [{
-                label: 'Giá trị (VNĐ)',
-                data: fishData.map(f => f.price),
-                backgroundColor: 'rgba(0, 119, 182, 0.7)',
-                borderRadius: 8
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
+    // Logic lọc: lấy 8 con hoặc tất cả
+    const dataToRender = isShowAll ? allFishes : allFishes.slice(0, 8);
+
+    if (dataToRender.length === 0) {
+        productGrid.innerHTML = '<p>Không tìm thấy cá phù hợp.</p>';
+        return;
+    }
+
+    dataToRender.forEach(item => {
+        const price = Number(item.price) || 0;
+        const displayPrice = price.toLocaleString('vi-VN') + 'đ';
+        const discountPrice = (price * 0.8).toLocaleString('vi-VN') + 'đ';
+
+        const cardHTML = `
+            <div class="card">
+                <div class="card-img-container">
+                    <div class="sale-banner">GIẢM 20%</div>
+                    ${price > 1000000 ? '<div class="vip-tag">HÀNG VIP</div>' : ''}
+                    <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3>${item.name}</h3>
+                        <p style="font-size: 13px; color: #666;">Size: ${item.size || 'N/A'} | ${item.fish_status || 'Khỏe'}</p>
+                        <p>
+                            <span class="price-old">${displayPrice}</span><br>
+                            <span class="price-new">${discountPrice}</span>
+                        </p>
+                    </div>
+                    <button class="btn-buy" onclick="xemChiTiet('${item.id}')">Xem chi tiết</button>
+                </div>
+            </div>
+        `;
+        productGrid.insertAdjacentHTML('beforeend', cardHTML);
     });
 }
 
-// 5. Hàm xử lý logic Thêm/Sửa
-function setupFormHandler() {
-    if (!fishForm) return; // Nếu trang không có form thì thoát luôn, không chạy tiếp để tránh lỗi null
+// 3. Logic Lọc (Search & Price)
+function filterProducts() {
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || "";
+    const priceRange = document.getElementById('priceFilter')?.value || "all";
 
-    // SỬA LỖI DÒNG 134: Kiểm tra btnUpdate trước khi addEventListener
-    if (btnUpdate) {
-        btnUpdate.addEventListener('click', async function() {
-            const id = fishIdInput.value;
-            const updatedFish = {
-                name: document.getElementById('fishName').value,
-                image: document.getElementById('fishImg').value,
-                price: document.getElementById('fishPrice').value,
-                fish_status: document.getElementById('fishStatus').value,
-                size: document.getElementById('fishSize').value
-            };
+    const filtered = allFishes.filter(f => {
+        const matchesName = f.name.toLowerCase().includes(searchTerm);
+        let matchesPrice = true;
+        const p = Number(f.price);
 
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updatedFish)
-                });
-                if (res.ok) {
-                    alert("✅ Cập nhật thành công!");
-                    window.location.href = 'ad.html';
-                }
-            } catch (err) { alert("❌ Lỗi cập nhật!"); }
-        });
-    }
+        if (priceRange === '100000') matchesPrice = p < 100000;
+        else if (priceRange === '500000') matchesPrice = p >= 100000 && p <= 500000;
+        else if (priceRange === 'vip') matchesPrice = p > 500000;
 
-    // Logic cho nút Thêm mới
-    fishForm.addEventListener('submit', async (e) => {
-        if (btnUpdate && btnUpdate.style.display === 'inline-block') return; // Đang ở chế độ sửa thì ko chạy thêm mới
-        e.preventDefault();
-        // ... Code fetch POST thêm mới của vro giữ nguyên ...
+        return matchesName && matchesPrice;
     });
+
+    // Khi lọc thì nên hiện hết kết quả phù hợp, không nên giới hạn 8 con
+    renderFiltered(filtered);
 }
 
-// 6. Kiểm tra chế độ Sửa từ URL (?editId=...)
-async function checkEditMode() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const editId = urlParams.get('editId');
-
-    if (editId && fishForm) {
-        const res = await fetch(`${API_URL}/${editId}`);
-        const fish = await res.json();
-
-        // Điền dữ liệu vào form
-        document.getElementById('fishName').value = fish.name;
-        document.getElementById('fishImg').value = fish.image || fish.avatar;
-        document.getElementById('fishPrice').value = fish.price;
-        document.getElementById('fishStatus').value = fish.fish_status;
-        document.getElementById('fishSize').value = fish.size;
-        if (fishIdInput) fishIdInput.value = fish.id;
-
-        // Hiện nút Lưu, ẩn nút Thêm
-        if (btnAdd) btnAdd.style.display = 'none';
-        if (btnUpdate) btnUpdate.style.display = 'inline-block';
-    }
+function renderFiltered(data) {
+    // Tạm thời gán data lọc vào và vẽ lại toàn bộ
+    // (Đây là hàm phụ để tránh ảnh hưởng biến isShowAll của trang chủ)
+    const originalAll = allFishes;
+    allFishes = data;
+    isShowAll = true; 
+    renderProducts();
+    allFishes = originalAll; // Trả lại dữ liệu gốc
 }
+
+function xemChiTiet(id) {
+    window.location.href = `detail.html?id=${id}`;
+}
+
+
+
+// Khởi chạy
+fetchFishData();
