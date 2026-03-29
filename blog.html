@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Kinh Nghiệm Nuôi Cá - Vựa Cá Kiểng VRO</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .blog-header { background: #f4f7f6; padding: 40px 0; text-align: center; }
+        .blog-container { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 30px; }
+        .blog-card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .blog-card img { width: 100%; height: 250px; object-fit: cover; }
+        .blog-content { padding: 20px; }
+        .blog-tag { background: #0077b6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        .sidebar-box { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
+        @media (max-width: 768px) { .blog-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="main-navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Cửa Hàng</a></li>
+                <li><a href="blog.html">Kinh Nghiệm</a></li>
+                <li><a href="ad.html">Quản trị</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="blog-header">
+        <h1>Chia Sẻ Kinh Nghiệm Nuôi Cá</h1>
+        <p>Hành trình trở thành dân chơi cá chuyên nghiệp cùng VRO</p>
+    </div>
+
+    <main class="container blog-container">
+        <div id="blog-list">
+            <div class="blog-card">
+                <img src="https://images.unsplash.com/photo-1524704659690-3f7a3fe19bb7" alt="Cá lóc">
+                <div class="blog-content">
+                    <span class="blog-tag">Kỹ thuật</span>
+                    <h2 style="margin: 10px 0;">Cách thuần dưỡng cá lóc cảnh khi mới mua về</h2>
+                    <p style="color: #666; line-height: 1.6;">Để cá không bị nhát và nhanh ăn, bạn cần thực hiện các bước dưỡng nước sau đây...</p>
+                    <a href="#" style="color: #0077b6; font-weight: bold; text-decoration: none;">Đọc tiếp →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="blog-card">
+    <img src="https://images.unsplash.com/photo-1522062565074-67507d130ee1?auto=format&fit=crop&w=800&q=80" alt="Dưỡng cá lóc">
+    <div class="blog-content">
+        <span class="blog-tag">Kỹ thuật</span>
+        <h2 style="margin: 10px 0;">5 Bước dưỡng cá lóc mới mua về không bị "stress"</h2>
+        <p style="color: #666; line-height: 1.6;">Sai lầm lớn nhất của người mới chơi là thả cá ngay vào bể mới. Hãy học cách cân bằng nhiệt độ và khử Clo để cá luôn sung sức...</p>
+        <a href="#" style="color: #0077b6; font-weight: bold; text-decoration: none;">Đọc tiếp →</a>
+    </div>
+</div>
+
+<div class="blog-card">
+    <img src="https://images.unsplash.com/photo-1509101042331-a83fcc407632?auto=format&fit=crop&w=800&q=80" alt="Chọn cá lóc đẹp">
+    <div class="blog-content">
+        <span class="blog-tag">Kinh nghiệm</span>
+        <h2 style="margin: 10px 0;">Bí quyết chọn cá lóc vây xanh (Blue Bengal) cực chuẩn</h2>
+        <p style="color: #666; line-height: 1.6;">Làm sao để biết cá sẽ lên màu đẹp trong tương lai? Hãy chú ý vào hàng vảy hàng thứ 3 và độ lanh lợi của đôi mắt...</p>
+        <a href="#" style="color: #0077b6; font-weight: bold; text-decoration: none;">Đọc tiếp →</a>
+    </div>
+</div>
+
+<div class="blog-card">
+    <img src="https://images.unsplash.com/photo-1629194241031-6e3e56687071?auto=format&fit=crop&w=800&q=80" alt="Trị bệnh nấm cá">
+    <div class="blog-content">
+        <span class="blog-tag">Sức khỏe</span>
+        <h2 style="margin: 10px 0;">Trị dứt điểm nấm trắng và sình bụng ở cá lóc</h2>
+        <p style="color: #666; line-height: 1.6;">Thời tiết giao mùa rất dễ khiến cá mắc bệnh. Chỉ với muối hột và một chút lá bàng, bạn có thể cứu sống chú cá cưng của mình...</p>
+        <a href="#" style="color: #0077b6; font-weight: bold; text-decoration: none;">Đọc tiếp →</a>
+    </div>
+</div>
+
+        <aside>
+            <div class="sidebar-box">
+                <h4>Tìm kiếm bài viết</h4>
+                <input type="text" placeholder="Nhập từ khóa..." style="width:100%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:5px;">
+            </div>
+            <div class="sidebar-box">
+                <h4>Chủ đề phổ biến</h4>
+                <ul style="list-style: none; padding: 0; margin-top: 10px;">
+                    <li style="padding: 8px 0; border-bottom: 1px dashed #eee;"><a href="#" style="text-decoration:none; color:#333;">Kỹ thuật nuôi cá lóc</a></li>
+                    <li style="padding: 8px 0; border-bottom: 1px dashed #eee;"><a href="#" style="text-decoration:none; color:#333;">Cách xử lý nước hồ cá</a></li>
+                    <li style="padding: 8px 0; border-bottom: 1px dashed #eee;"><a href="#" style="text-decoration:none; color:#333;">Các loại bệnh thường gặp</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-box" style="background: #0077b6; color:white;">
+                <h4>Bạn cần tư vấn?</h4>
+                <p>Nhắn tin ngay cho VRO để được hỗ trợ kỹ thuật miễn phí.</p>
+                <button style="width:100%; padding:10px; background:white; color:#0077b6; border:none; border-radius:5px; cursor:pointer; font-weight:bold; margin-top:10px;">CHÁT QUA ZALO</button>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-bottom">
+            <p>© 2026 VRO Aquarium - Chia sẻ đam mê</p>
+        </div>
+    </footer>
+</body>
+</html>
