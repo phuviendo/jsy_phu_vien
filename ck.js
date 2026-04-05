@@ -207,3 +207,42 @@ function showToast(message) {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);
 }
+
+async function askAI() {
+    const GEMINI_API_KEY = "AIzaSyDMmq1MV0WOWKc_wU5qM7yWvFzC4Iapb28"; // Vro nhớ dán lại key vừa tạo nhé!
+    const inputField = document.getElementById('user-input');
+    const chatContent = document.getElementById('chat-content');
+    const userMsg = inputField.value.trim();
+    
+    if (!userMsg) return;
+
+    chatContent.innerHTML += `<div><b>Bạn:</b> ${userMsg}</div>`;
+    inputField.value = '';
+
+    try {
+        // Đảm bảo URL có đoạn ":generateContent" ở cuối tên model
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: userMsg }] }]
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Nếu lỗi, hiện mã lỗi cụ thể (404, 400, 403...) để biết đường sửa
+            throw new Error(`Lỗi ${response.status}: ${data.error?.message || 'Không xác định'}`);
+        }
+
+        const aiMsg = data.candidates[0].content.parts[0].text;
+        chatContent.innerHTML += `<div style="color: #0077b6;"><b>AI VRO:</b> ${aiMsg}</div>`;
+    } catch (error) {
+        console.error("Lỗi chi tiết:", error);
+        chatContent.innerHTML += `<div style="color: red; font-size: 12px;">⚠️ ${error.message}</div>`;
+    }
+    chatContent.scrollTop = chatContent.scrollHeight;
+}

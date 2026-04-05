@@ -12,14 +12,8 @@
         <div class="nav-container">
             <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
             <ul class="nav-links">
-                <li class="dropdown">
-                    <a href="javascript:void(0)" class="dropbtn">Phụ Kiện ▼</a>
-                    <div class="dropdown-content">
-                        <a href="ho.html">Hồ cá</a>
-                        <a href="#">Thức ăn</a>
-                        <a href="#">Lọc & Sủi</a>
-                    </div>
-                </li>
+               
+                <li><a href="ho.html">Phụ kiện</a></li>
                 <li><a href="index.html">Trang Chủ</a></li>
                 <li><a href="full.html">Tất cả cá</a></li>
                 <li><button id="cart-btn">Giỏ hàng (0)</button></li>
@@ -87,6 +81,20 @@
     </div>
 </div>
 
+<div id="ai-chat-wrapper" style="position: fixed; bottom: 20px; right: 80px; z-index: 10000;">
+    <button onclick="toggleChat()" style="background: #0077b6; color: white; border-radius: 50%; width: 60px; height: 60px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        <i class="fas fa-robot"></i>
+    </button>
+    
+    <div id="chat-box" style="display: none; position: absolute; bottom: 80px; right: 0; width: 300px; height: 400px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); flex-direction: column;">
+        <div style="background: #0077b6; color: white; padding: 15px; border-radius: 15px 15px 0 0;"><b>Trợ lý Cá Lóc VRO</b></div>
+        <div id="chat-content" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 14px;"></div>
+        <div style="display: flex; padding: 10px; border-top: 1px solid #eee;">
+            <input id="user-input" type="text" placeholder="Hỏi về cá lóc..." style="flex: 1; border: 1px solid #ddd; padding: 8px; border-radius: 5px;">
+            <button onclick="askAI()" style="margin-left: 5px; background: #0077b6; color: white; border: none; padding: 8px 12px; border-radius: 5px;">Gửi</button>
+        </div>
+    </div>
+</div>
 
    <footer class="main-footer">
     <div class="container footer-grid">

@@ -1,39 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Phụ Kiện Cá Cảnh - VRO</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .category-tabs { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        .tab-btn { padding: 10px 25px; border: 1px solid #0077b6; border-radius: 20px; cursor: pointer; background: white; color: #0077b6; font-weight: bold; }
+        .tab-btn.active { background: #0077b6; color: white; }
+    </style>
 </head>
 <body>
-    <nav class="main-navbar">
-    <div class="nav-container">
-        <div class="nav-logo">🐟 VỰA CÁ LÓC KIỂNG</div>
-        <ul class="nav-links">
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Phụ Kiện ▼</a>
-                <div class="dropdown-content">
-                    <a href="ho.html">Hồ cá</a>
-                    <a href="">Sạn & Sỏi</a>
-                    <a href="#">Thức ăn</a>
-                    <a href="#">Hệ thống lọc</a>
-                    <a href="#">Phụ kiện khác</a>
-                </div>
-            </li>
-            <li><a href="ck.html" id="nav-home">Trang Chủ</a></li>
-            <li><a href="full.html" id="nav-admin">Tất cả cá</a></li><button id="cart-btn">Giỏ hàng (0)</button>
-        </ul>
-    </div>
-     
-</nav>
-        
+    <header class="main-navbar">
+        <div class="nav-container">
+            <div class="nav-logo">🐟 VỰA CÁ KIỂNG</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang Chủ</a></li>
+                <li><a href="ho.html" class="active">Phụ Kiện</a></li>
+                <li><button id="cart-btn" class="btn-cart-top">Giỏ hàng (0)</button></li>
+            </ul>
+        </div>
     </header>
 
+    <div class="category-tabs">
+        <button class="tab-btn active" onclick="filterCategory('all')">Tất cả</button>
+        <button class="tab-btn" onclick="filterCategory('hồ')">Hồ cá</button>
+        <button class="tab-btn" onclick="filterCategory('lọc')">Máy lọc</button>
+        <button class="tab-btn" onclick="filterCategory('sỏi')">Cát sỏi</button>
+    </div>
+
+    <main class="container">
+        <div id="product-grid" class="grid-container">
+            </div>
+    </main>
     
-    <section class="hero">
-        <h2>Chuyên cung cấp các loại cá chất lượng cao</h2>
-        <p>Từ cá lóc nuôi nhà làm đến các loại cá cảnh nhập khẩu.</p>
-    </section>
+    <div id="cart-modal">...</div> 
+    <script>// Vro có thể tạo 1 API mới hoặc dùng mảng cứng nếu phụ kiện ít thay đổi
+const phuKienData = [
+    { id: 'pk1', name: 'Hồ kính siêu trong 40cm', category: 'hồ', price: 450000, image: 'link_anh_ho' },
+    { id: 'pk2', name: 'Lọc thùng SunSun HW-603B', category: 'lọc', price: 320000, image: 'link_anh_loc' },
+    { id: 'pk3', name: 'Cát nắng vàng (5kg)', category: 'sỏi', price: 75000, image: 'link_anh_soi' },
+    { id: 'pk4', name: 'Sỏi suối tự nhiên', category: 'sỏi', price: 50000, image: 'link_anh_soi2' }
+];
+
+let cart = JSON.parse(localStorage.getItem('vro_cart')) || [];
+
+function renderPhuKien(data) {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = data.map(item => `
+        <div class="card">
+            <img src="${item.image}" alt="${item.name}" style="height:180px; object-fit:cover;">
+            <div style="padding:15px;">
+                <h3>${item.name}</h3>
+                <p style="color:#d63031; font-weight:bold;">${item.price.toLocaleString()}đ</p>
+                <button onclick="addToCartPK('${item.id}')" style="width:100%; padding:10px; background:#27ae60; color:white; border:none; border-radius:5px; cursor:pointer;">Thêm vào giỏ</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+
+
+
+function filterCategory(cat) {
+    // Đổi màu nút Tab
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if(cat === 'all') return renderPhuKien(phuKienData);
+    const filtered = phuKienData.filter(p => p.category === cat);
+    renderPhuKien(filtered);
+}
+
+function addToCartPK(id) {
+    const item = phuKienData.find(p => p.id === id);
+    const existing = cart.find(c => c.id === id);
+    if(existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({...item, quantity: 1});
+    }
+    localStorage.setItem('vro_cart', JSON.stringify(cart));
+    updateCartCount();
+    alert("Đã thêm phụ kiện vào giỏ!");
+}
+
+function updateCartCount() {
+    const count = cart.reduce((sum, i) => sum + i.quantity, 0);
+    document.getElementById('cart-btn').innerText = `Giỏ hàng (${count})`;
+}
+
+function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    // Nếu đang ẩn thì hiện (flex), nếu đang hiện thì ẩn (none)
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'flex';
+        renderCartItems(); // Vẽ lại danh sách cá mới nhất trong giỏ
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+// Chạy lần đầu
+renderPhuKien(phuKienData);
+updateCartCount();</script>
 </body>
 </html>
